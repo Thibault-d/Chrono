@@ -2,6 +2,7 @@ class Chrono {
   constructor() {
     this.numOfSecons = 0;
     this.intervalId = undefined;
+    this.onChange = undefined;
   }
 
   /**
@@ -10,8 +11,10 @@ class Chrono {
   start() {
     if (!this.intervalId) {
       this.intervalId = setInterval(() => {
-        this.numOfSecons++
-        this.showTime()
+        this.numOfSecons++;
+        if (this.onChange) {
+          this.onChange(this.showTime())
+        }
       }, 1000)
     }
   }
@@ -31,6 +34,9 @@ class Chrono {
    */
   reset() {
     this.numOfSecons = 0;
+    if (this.onChange) {
+      this.onChange(this.showTime())
+    }
   }
 
   /**
@@ -46,6 +52,12 @@ class Chrono {
     const seconds = this._convertToStringWithTwoDigits(this.numOfSecons % 60); // remaining seconds 
     const minutes = this._convertToStringWithTwoDigits(Math.floor(this.numOfSecons / 60) % 60); // remaining minutes
     const hours = this._convertToStringWithTwoDigits(Math.floor(this.numOfSecons / 60 / 60)); // number of hours
-    console.log(`${hours}:${minutes}:${seconds}`);
+    // console.log(`${hours}:${minutes}:${seconds}`);
+    return `${hours}:${minutes}:${seconds}`;
   }
+
+  setOnChange(callback) {
+    this.onChange = callback;
+  }
+
 }
